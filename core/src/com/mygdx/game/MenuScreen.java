@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,100 +16,129 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
 
-public class MenuScreen implements Screen {
-
-    MyGdxGame game; // Note it’s "MyGdxGame" not "Game"
-    private SpriteBatch batch;
-    private Skin skin;
+public class MenuScreen extends ScreenAdapter {
     private Stage stage;
-    private Music backgroundMusic;
+    private SpriteBatch batch;
+    private Texture backgroundTexture;
+    private Image backgroundImage;
+    private TextButton newGameButton;
+    private TextButton continueGameButton;
+    private TextButton exitButton;
 
-    // constructor to keep a reference to the main Game class
-    public MenuScreen(MyGdxGame game) {
-        this.game = game;
-    }
+    // Snowflake properties
+    private Texture snowflakeTexture;
+    private float[] snowflakes;
+    private static final int SNOWFLAKE_COUNT = 200;
 
-
-
-    public void create() {
-        Gdx.app.log("MenuScreen: ","menuScreen create");
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/Eight_Bit_Adventure.wav"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
-        batch = new SpriteBatch();
-        skin = new Skin(Gdx.files.internal("gui/uiskin.json"));
+    public MenuScreen() {
         stage = new Stage();
-        TextureRegion buttonRegion = new TextureRegion(new Texture("PNG/UI/OrangeBtn1.png"));
-        TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(buttonRegion);
-        final TextButton exitButton = new TextButton("EXIT", skin, "default");
-        final TextButton playButton = new TextButton("PLAY", skin, "default");
-        exitButton.getLabel().setFontScale(6);
-        playButton.getLabel().setFontScale(6);
-        //set the size of buttons
-        exitButton.setWidth(800f);
-        exitButton.setHeight(300f);
-        playButton.setWidth(800f);
-        playButton.setHeight(300f);
-        //set the position of buttons, the position we set here is the upper left corner of the buttons.
-        exitButton.setPosition(Gdx.graphics.getWidth() /2 - 400, Gdx.graphics.getHeight()/2 - 350f);
-        playButton.setPosition(Gdx.graphics.getWidth() /2 - 400, Gdx.graphics.getHeight()/2 + 50f);
-        exitButton.getStyle().up = buttonDrawable;
-        stage.addActor(exitButton);
-        stage.addActor(playButton);
+        batch = new SpriteBatch();
         Gdx.input.setInputProcessor(stage);
-        exitButton.addListener(new ClickListener()
-        {
+
+        // Load the background texture and create an image actor
+        backgroundTexture = new Texture("background.jpg"); // Customize the background image path as per your needs
+        backgroundImage = new Image(backgroundTexture);
+        stage.addActor(backgroundImage);
+
+        // Load the snowflake texture
+        snowflakeTexture = new Texture("snowflake.png"); // Customize the snowflake image path as per your needs
+
+        // Create and position the buttons
+        newGameButton = createButton("New Game", Align.center, 100);
+        continueGameButton = createButton("Continue Game", Align.center, 50);
+        exitButton = createButton("Exit", Align.center, 0);
+
+        // Add button listeners
+        newGameButton.addListener(new ClickListener() {
             @Override
-            public void clicked (InputEvent event, float x, float y)
-            {
-                //exit -> return to the OS
-                Gdx.app.exit();
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                // TODO: Handle "New Game" button click
             }
         });
-        playButton.addListener(new ClickListener()
-        {
+
+        continueGameButton.addListener(new ClickListener() {
             @Override
-            public void clicked (InputEvent event, float x, float y)
-            {
-                //play -> go to GameScreen
-                game.setScreen(MyGdxGame.gameScreen);
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                // TODO: Handle "Continue Game" button click
             }
         });
+
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                // TODO: Handle "Exit" button click
+                Gdx.app.exit(); // Close the application
+            }
+        });
+
+        // Add buttons to the stage
+        stage.addActor(newGameButton);
+        stage.addActor(continueGameButton);
+        stage.addActor(exitButton);
+
+        // Generate random snowflake positions
+        generateSnowflakes();
     }
 
-    public void render(float f) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+    private TextButton createButton(String text, int align, float y) {
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        // Customize the button style (font, color, etc.) as per your needs
+
+        TextButton button = new TextButton(text, style);
+        button.setSize(200, 60); // Customize button size as per your needs
+        button.setPosition((Gdx.graphics.getWidth() - button.getWidth()) / 2, y, align);
+        return button;
+    }
+
+    private void generateSnowflakes() {
+        snowflakes = new float[SNOWFLAKE_COUNT * 2];
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+
+        for (int i = 0; i < snowflakes.length; i += 2) {
+            float x = (float) (Math.random() * width);
+            float y = (float) (Math.random() * height);
+            snowflakes[i] = x;
+            snowflakes[i + 1] = y;
+        }
+    }
+
+    @Override
+    public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        stage.draw();
+        // Draw the background image
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Draw the snowflakes
+        for (int i = 0; i < snowflakes.length; i += 2) {
+            float x = snowflakes[i];
+            float y = snowflakes[i + 1];
+            batch.draw(snowflakeTexture, x, y);
+        }
+
         batch.end();
+
+        // Draw the stage
+        stage.act();
+        stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void dispose() {
-        backgroundMusic.stop();
-        backgroundMusic.dispose();
-    }
-
-    @Override
-    public void resize(int width, int height) { }
-
-    @Override
-    public void pause() { }
-
-    @Override
-    public void resume() { }
-
-    @Override
-    public void show() {
-        Gdx.app.log("MenuScreen: ","menuScreen show called");
-        create();
-    }
-
-    @Override
-    public void hide() {
-        Gdx.app.log("MenuScreen: ","menuScreen hide called");
+        // Dispose resources
+        stage.dispose();
+        batch.dispose();
+        backgroundTexture.dispose();
+        snowflakeTexture.dispose();
     }
 }
