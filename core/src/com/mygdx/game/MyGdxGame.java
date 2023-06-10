@@ -15,7 +15,7 @@ public class MyGdxGame extends Game implements ApplicationListener {
 	@Override
 	public void create() {
 		Gdx.app.log("MyGdxGame: "," create");
-		gameScreen = new GameScreen(this);
+		gameScreen = new GameScreen();
 		menuScreen = new MenuScreen(this);
 		Gdx.app.log("MyGdxGame: ","about to change screen to menuScreen");
 		// Change screens to the menu

@@ -9,7 +9,6 @@ public class LayerRenderer extends OrthogonalTiledMapRenderer {
         super(map);
     }
 
-    //TODO Override renderTileLayer()
     public void renderTileLayer(TiledMapTileLayer layer) {
         beginRender();
         super.renderTileLayer(layer);
