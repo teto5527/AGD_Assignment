@@ -30,6 +30,7 @@ public class MenuScreen implements Screen {
     private TextButton newGameButton;
     private TextButton continueGameButton;
     private TextButton exitButton;
+    private BackgroundMusic backgroundMusic;
 
     // constructor to keep a reference to the main Game class
     public MenuScreen(MyGdxGame game) {
@@ -104,7 +105,13 @@ public class MenuScreen implements Screen {
     }
 
     @Override
-    public void dispose() { }
+    public void dispose() {
+        batch.dispose();
+        stage.dispose();
+        skin.dispose();
+        backgroundTexture.dispose();
+        backgroundMusic.dispose();
+    }
 
     @Override
     public void resize(int width, int height) { }
@@ -118,6 +125,8 @@ public class MenuScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log("MenuScreen: ","menuScreen show called");
+        backgroundMusic = new BackgroundMusic("music/Fun_Times.wav");
+        backgroundMusic.play();
         create();
     }
 
