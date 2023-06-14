@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -12,8 +13,7 @@ public class Player extends Entity{
     //Player Character
     Texture playerTexture;
     Sprite playerSprite;
-    Vector2 playerDelta;
-    Rectangle playerDeltaRectangle;
+
 
     private Direction direction;
     private float attackCooldown;
@@ -25,11 +25,6 @@ public class Player extends Entity{
         direction = Direction.DOWN;
         attackCooldown = 0;
         canAttack = true;
-
-        playerSprite = new Sprite(playerTexture);
-        playerSprite.setSize(24, 24);
-        playerDelta = new Vector2();
-        playerDeltaRectangle = new Rectangle(0, 0, playerSprite.getWidth(), playerSprite.getHeight());
     }
     @Override
     public void update() {
@@ -48,7 +43,6 @@ public class Player extends Entity{
         canAttack = false;
         attackCooldown = attackCooldownTime;
 
-        // 根据玩家朝向获取攻击目标位置playerSprite.getX()
         float targetX = getX();
         float targetY = getY();
         switch (direction) {
@@ -72,7 +66,7 @@ public class Player extends Entity{
         }
     }
 
-    private void updateDirection() {
+    public void updateDirection() {
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             direction = Direction.UP;
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -83,6 +77,9 @@ public class Player extends Entity{
             direction = Direction.LEFT;
         }
     }
+    public void setDirection(Direction d){
+        direction = d;
+    }
 
     private Entity getEntityAt(float x, float y) {
         return null;
@@ -91,5 +88,10 @@ public class Player extends Entity{
     @Override
     public void render() {
 
+    }
+
+    public void Draw(SpriteBatch batch){
+        playerSprite.setPosition(0,0);
+        playerSprite.draw(batch);
     }
 }

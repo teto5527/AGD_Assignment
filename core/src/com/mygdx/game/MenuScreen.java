@@ -30,14 +30,13 @@ public class MenuScreen implements Screen {
     private TextButton newGameButton;
     private TextButton continueGameButton;
     private TextButton exitButton;
-    private BackgroundMusic backgroundMusic;
+    private MusicManager backgroundMusic;
+
 
     // constructor to keep a reference to the main Game class
     public MenuScreen(MyGdxGame game) {
         this.game = game;
     }
-
-
 
     public void create() {
         Gdx.app.log("MenuScreen: ","menuScreen create");
@@ -66,7 +65,8 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
-                game.setScreen(MyGdxGame.gameScreen);
+                game.setScreen(new GameScreen());
+                dispose();
             }
         });
         continueGameButton.addListener(new ClickListener()
@@ -74,7 +74,8 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
-                Gdx.app.exit();
+                //TODO:
+
             }
         });
         exitButton.addListener(new ClickListener()
@@ -82,6 +83,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked (InputEvent event, float x, float y)
             {
+                dispose();
                 Gdx.app.exit();
             }
         });
@@ -125,7 +127,7 @@ public class MenuScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log("MenuScreen: ","menuScreen show called");
-        backgroundMusic = new BackgroundMusic("music/Fun_Times.wav");
+        backgroundMusic = new MusicManager("music/Fun_Times.wav");
         backgroundMusic.play();
         create();
     }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public abstract class Entity {
 
-    private Sprite entitySprite;
+    private Sprite sprite;
 
     public enum Direction {
         UP,
@@ -32,32 +32,30 @@ public abstract class Entity {
     private int healthPoints;
     private int attackPoints;
     private int defensePoints;
-    private int speedPoints;
+    private float moveSpeed;
     private Texture texture;
-    private Sprite sprite;
 
     public Entity(Texture texture) {
-        this.entitySprite = entitySprite;
-
-        this.texture = texture;
         this.sprite = new Sprite(texture);
+        sprite.setSize(24,24);
+        this.texture = texture;
         jumpable = false;
         healthPoints = 1;
         attackPoints = 1;
         defensePoints = 0;
-        speedPoints = 1;
+        moveSpeed = 200.0f;
     }
 
-    public Sprite getEntitySprite() {
-        return entitySprite;
+    public Sprite getSprite() {
+        return sprite;
     }
 
     public float getX() {
-        return entitySprite.getX();
+        return sprite.getX();
     }
 
     public float getY() {
-        return entitySprite.getY();
+        return sprite.getY();
     }
 
     public boolean isJumpable() {
@@ -92,12 +90,12 @@ public abstract class Entity {
         this.defensePoints = defensePoints;
     }
 
-    public int getSpeedPoints() {
-        return speedPoints;
+    public float getMoveSpeed() {
+        return moveSpeed;
     }
 
-    public void setSpeedPoints(int speedPoints) {
-        this.speedPoints = speedPoints;
+    public void setMoveSpeed(int speedPoints) {
+        this.moveSpeed = speedPoints;
     }
 
     public Texture getTexture() {
@@ -107,10 +105,6 @@ public abstract class Entity {
     public void setTexture(Texture texture) {
         this.texture = texture;
         this.sprite = new Sprite(texture);
-    }
-
-    public Sprite getSprite() {
-        return sprite;
     }
 
     public abstract void update();
